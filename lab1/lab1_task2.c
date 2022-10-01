@@ -124,6 +124,7 @@ int main(int argc, char **argv)
             else if (flag==0) printf("Нет корней\n");
             else if (flag==1) printf("Один корень: x=%.5f", *ans);
             else if (flag==2) printf("Два корня: x1=%.5f, x2=%.5f\n", ans[0], ans[1]);
+            free(ans);
             return 0;
         } else if (strcmp(argv[1], "-t")==0 || strcmp(argv[1], "/t")==0) {
             flag = is_rect_triangle(d[0], d[1], d[2]);

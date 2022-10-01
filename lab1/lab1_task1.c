@@ -120,7 +120,8 @@ int main(int argc, char **argv)
                     printf("\n");
                 }
                 else if (N==0) printf("no multiples\n");
-                else printf("memori error\n");
+                else printf("memory error\n");
+                free(res);
                 return 0;
             } else if (strcmp(argv[2], "-p")==0 || strcmp(argv[2], "/p")==0) {
                 printf("p\n");
@@ -150,11 +151,10 @@ int main(int argc, char **argv)
                 else printf("fact=%d\n", N);
                 return 0;
             }
-            printf("incorrect flag\n");
+            else printf("incorrect flag\n");
         }
     }
     else printf("incorrect number of arguments\n");
-    printf("%*s%d\n", 100, "", 0);
     usage();
     return 0;
 }
