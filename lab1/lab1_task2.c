@@ -79,14 +79,14 @@ int quadratic_equation(double a, double b, double c, double **ans){
     double D;
     if (abs(a)<EPS) return -1;
     D = b*b-4*a*c;
-    if (D<0) return 0;
-    else if (abs(D)<EPS) {
-        *ans = (double*)malloc(sizeof(double*));
+    if (abs(D)<EPS) {
+        *ans = (double*)malloc(sizeof(double));
         **ans = -b/2/a;
         return 1;
     }
+    else if (D<-EPS) return 0;
     else {
-        *ans = (double*)malloc(2*sizeof(double*));
+        *ans = (double*)malloc(2*sizeof(double));
         D = sqrt(D);
         (*ans)[0] = (-b-D)/2/a;
         (*ans)[1] = (-b+D)/2/a;
@@ -96,13 +96,15 @@ int quadratic_equation(double a, double b, double c, double **ans){
 }
 
 int is_rect_triangle(double a, double b, double c){
+    if ((a<EPS)||(b<EPS)||(c<EPS)) return 0;
+    printf("%f, %f, %f", a, b, c);
     double A=a*a, B=b*b, C=c*c;
-    if (((abs(A+B-C)<EPS)||(abs(B+C-A)<EPS)||(abs(C+A-B)<EPS))&&(a>0)&&(b>0)&&(c>0)) return 1;
+    if ((abs(A+B-C)<EPS)||(abs(B+C-A)<EPS)||(abs(C+A-B)<EPS)) return 1;
     return 0;
 }
 
 int is_multiple(int n1, int n2){
-    if (!(n1)||!(n2)) return -1;
+    if (!(n2)) return -1;
     return n1%n2 == 0;
 }
 int main(int argc, char **argv)
@@ -145,7 +147,7 @@ int main(int argc, char **argv)
         }
         if (strcmp(argv[1], "-m")==0 || strcmp(argv[1], "/m")==0) {
             flag = is_multiple(n[0], n[1]);
-            if (flag==-1) printf("Одно из чисел равно нулю\n");
+            if (flag==-1) printf("Делитель равен нулю\n");
             else if (flag) printf("Первое число кратно второму\n");
             else printf("Первое число не кратно второму\n");
             return 0;
