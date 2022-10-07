@@ -22,7 +22,7 @@ int main(){
     }
     printf("\n");
     printf("Поменяем %d-тый(min=%d) и %d-тый(max=%d)\n", i_min, arr[i_min], i_max, arr[i_max]);
-    arr[i_min] = arr[i_min] + arr[i_max];
+    arr[i_min] = arr[i_min] + arr[i_max];//лучше использовать xor чтобы избежать переполнения
     arr[i_max] = arr[i_min] - arr[i_max];
     arr[i_min] = arr[i_min] - arr[i_max];
     for (int i=0; i<SIZE; i++) printf("%d\t", arr[i]);

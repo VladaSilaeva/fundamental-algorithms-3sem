@@ -56,7 +56,7 @@ int main(int argc, char **argv){
     srand(time(NULL));
     int *arr=NULL, *u_arr=NULL, n=5, m=0;
     arr = (int*)malloc(n*sizeof(int));
-    fill_arr_rand(n, &arr, 0, 2);
+    fill_arr_rand(n, &arr, 0, RAND_MAX);
     for (int i=0; i<n; i++) printf("%d ", arr[i]);
     printf("\n");
     if (argc == 2) {
