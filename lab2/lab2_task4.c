@@ -15,21 +15,29 @@ double gmean(int count, ...){
     return pow(res, 1./count);
 }
 
-double my_pow(double a, int k){
-    if (a<EPS && k<0) return NAN;
-    if (k==0) return 1.0;
-    if (k>0) return my_pow(a, k-1)*a;
-    return my_pow(a, k+1)/a;
+
+double intpow(double a, int b){
+  double r = 1.0;
+  if (b < 0){
+    if (a<EPS) return NAN;
+    a = 1.0 / a;
+    b = -b;
+  }
+  if (b == 0) return 1.0;
+  if (b & 1) return a * intpow(a, b-1);
+  r = intpow(a, b>>1);
+  return r*r;
 }
+
 
 int main(int argc, char **argv)
 {
     int N = 4;
     double arr[4] = {2.0, 4.0, 8.0, 4.0};
     printf("gmean(%.1f, %.1f, %.1f, %.1f) = %f\n", arr[0], arr[1], arr[2], arr[3], gmean(N, arr[0], arr[1], arr[2], arr[3]));
-    printf("pow(%.1f, %d)=%f\n", arr[1], 2, my_pow(arr[1], 2));
-    printf("pow(%.1f, %d)=%f\n", -arr[1], 3, my_pow(-arr[1], 3));
-    printf("pow(%.1f, %d)=%f\n", arr[1], -2, my_pow(arr[1], -2));
-    printf("pow(%.1f, %d)=%f\n", -arr[1], 3, my_pow(-arr[1], -3));
+    printf("pow(%.1f, %d)=%f\n", arr[1], 2, intpow(arr[1], 2));
+    printf("pow(%.1f, %d)=%f\n", -arr[1], 3, intpow(-arr[1], 3));
+    printf("pow(%.1f, %d)=%f\n", arr[1], -2, intpow(arr[1], -2));
+    printf("pow(%.1f, %d)=%f\n", -arr[1], 3, intpow(-arr[1], -3));
     return 0;
 }

@@ -45,7 +45,7 @@ void toupperodds(const char *str, char **buf){
     (*buf)[i+1]=0;
 }
 
-void flag_n(const char *str, char **buf){
+void separate_num_alp_other(const char *str, char **buf){
     int N=len(str), l=0, o=0;
     char *letters, *others, *p;
     p = (char*)realloc(*buf, (N+1)*sizeof(char));
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
             toupperodds(argv[2], &buf);
             printf("Измененная строка %s\n", buf);
         } else if (strcmp(argv[1], "-n")==0 || strcmp(argv[1], "/n")==0) {//flag_n        
-            flag_n(argv[2], &buf);
+            separate_num_alp_other(argv[2], &buf);
             printf("Измененная строка %s\n", buf);
         } else {
             is_flags_correct = 0;
