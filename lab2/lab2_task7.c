@@ -16,70 +16,49 @@
 #include <string.h>
 #include <math.h>
 #define EPS 0.00000000000001
+#define bad_alloc -2
 
 typedef struct Point{
     double x;
     double y;
 } Point;
 
-void f(Point * p, double x, double y){
-    p->x=x;
-    p->y=y;
-}
 
 int isconvex(int count, ...){
     va_list l;
-    Point P0, P1, A, B, C;
+    Point *polygon=NULL;
     double k=0.0;
     int direction = 0;
     if (count < 3) return -1;
+    polygon=(Point*)malloc((count+2)*sizeof(Point));
+    if (!polygon) return bad_alloc;
     va_start(l, count);
-    A = va_arg(l, Point);
-    B = va_arg(l, Point);
-    P0 = A; P1 = B;
-    for (int i=2; i<count; i++) {
-        C = va_arg(l, Point);
-        k = (B.x-A.x)*(C.y-B.y)-(B.y-A.y)*(C.x-B.x);
-        printf("A(%.2f; %.2f) B(%.2f; %.2f) C(%.2f; %.2f)\t\t\t\t", A.x,A.y, B.x,B.y, C.x,C.y);
-        printf("AB(%.2f; %.2f) BC(%.2f; %.2f)\tk=%f\n", (B.x-A.x), (B.y-A.y), (C.x-B.x), (C.y-B.y), k);
+    for (int i=0; i<count; i++) {
+        polygon[i] = va_arg(l, Point);
+    }
+    va_end(l);
+    polygon[count].x = polygon[0].x; polygon[count].y = polygon[0].y;
+    polygon[count+1].x = polygon[1].x; polygon[count+1].y = polygon[1].y;
+    for (int i=0; i<count; i++) {
+        k = (polygon[i+1].x-polygon[i].x)*(polygon[i+2].y-polygon[i+1].y)-(polygon[i+1].y-polygon[i].y)*(polygon[i+2].x-polygon[i+1].x);
+        printf("%d A(%.2f; %.2f) B(%.2f; %.2f) C(%.2f; %.2f)\t\t\t\t", i, polygon[i].x,polygon[i].y, polygon[i+1].x,polygon[i+1].y, polygon[i+2].x,polygon[i+2].y);
+        printf("AB(%.2f; %.2f) BC(%.2f; %.2f)\tk=%f\n", (polygon[i+1].x-polygon[i].x), (polygon[i+1].y-polygon[i].y), (polygon[i+2].x-polygon[i+1].x), (polygon[i+2].y-polygon[i+1].y), k);
         if (k < -EPS) {
-            if (direction > 0) return 0;
+            if (direction > 0) {
+                free(polygon);
+                return 0;
+            }
             else direction = -1;
         }
         else if (k > EPS) {
-            if (direction < 0) return 0;
+            if (direction < 0) {
+                free(polygon);
+                return 0;
+            }
             else direction = 1;
         }
-        A = B;
-        B = C;
     }
-    C = P0;
-    k = (B.x-A.x)*(C.y-B.y)-(B.y-A.y)*(C.x-B.x);
-    printf("A(%.2f; %.2f) B(%.2f; %.2f) C(%.2f; %.2f)\t\t\t\t", A.x,A.y, B.x,B.y, C.x,C.y);
-    printf("AB(%.2f; %.2f) BC(%.2f; %.2f)\tk=%f\n", (B.x-A.x), (B.y-A.y), (C.x-B.x), (C.y-B.y), k);
-    if (k < -EPS) {
-        if (direction > 0) return 0;
-        else direction = -1;
-    }
-    else if (k > EPS) {
-        if (direction < 0) return 0;
-        else direction = 1;
-    }
-    A = B;
-    B = C;
-    C = P1;
-    k = (B.x-A.x)*(C.y-B.y)-(B.y-A.y)*(C.x-B.x);
-    printf("A(%.2f; %.2f) B(%.2f; %.2f) C(%.2f; %.2f)\t\t\t\t", A.x,A.y, B.x,B.y, C.x,C.y);
-    printf("AB(%.2f; %.2f) BC(%.2f; %.2f)\tk=%f\n", (B.x-A.x), (B.y-A.y), (C.x-B.x), (C.y-B.y), k);
-    if (k < -EPS) {
-        if (direction > 0) return 0;
-        else direction = -1;
-    }
-    else if (k > EPS) {
-        if (direction < 0) return 0;
-        else direction = 1;
-    }
-    va_end(l);
+    free(polygon);
     return 1;
 }
 
@@ -90,33 +69,25 @@ double gorner(int n, double x, ...){
     va_start(l, x);
     res = va_arg(l, double);
     for (int i=0; i<n; i++) {
-        res= res*x + va_arg(l, double);
+        res = res*x + va_arg(l, double);
     }
     va_end(l);
     return res;
 }
 
 int main(int argc, char **argv){
-    //Point polygon[5] = {{-2.91, 6.14}, {1.97, 6.78}, {5.29, 3.74}, {3.05, -1.28}, {-3.43, 1.06}};
-    Point polygon[5] = {{1.71, 1.12}, {1.71, 1.12}, {5.29, 3.74}, {3.05, -1.28}, {-3.43, 1.06}};
+    Point polygon[] = {{-2.91, 6.14}, {1.97, 6.78}, {1.71, 1.12}, {5.29, 3.74}, {3.05, -1.28}, {-3.43, 1.06}};
     double x, y, x0, polynomial[5];
     if (argc == 2) {
         if (strcmp(argv[1], "-c")==0 || strcmp(argv[1], "/c")==0) {//is convex?
-            if (isconvex(4, polygon[1], polygon[2], polygon[3], polygon[4])){
+            if (isconvex(4, polygon[2], polygon[3], polygon[4], polygon[5])){
                 printf("Многоугольник выпуклый\n");
             }
             else {
                 printf("Многоугольник не выпуклый\n");
             }
-
         } else if (strcmp(argv[1], "-g")==0 || strcmp(argv[1], "/g")==0) {//gorner
-            printf("Введите коэффициенты многочлена пятой степени\n");
-            for (int i=0; i<6; i++){
-                scanf("%f %f", &polynomial[i]);
-            }
-            printf("Введите значение x0\n");
-            scanf("%f", &x0);
-            printf("Значение многочлена в точке %f\n", gorner(5, x0, polynomial[0], polynomial[1], polynomial[2], polynomial[3], polynomial[4]));
+            printf("Значение многочлена в точке %f\n", gorner(5, 2.0, 1.0, 1.0 , 1.0, 1.0, 1.0, 1.0));
         }
     }
     return 0;
