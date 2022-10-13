@@ -9,6 +9,7 @@ int str_search(const char* str, const char* f_name){
     FILE* fin = fopen(f_name, "r");
     int j_in_str=0, i_first=-1, i_in_file=0;
     if (!fin) return cant_open_file;
+    if (!str[0]) return 0;
     while(!feof(fin)) {
         if (fgetc(fin)==str[j_in_str]) {
             if (i_first==-1) i_first = i_in_file;
@@ -40,7 +41,7 @@ int main(int argc, char **argv)
 {
     int *ans, count = 5;
     char *f_names[] = {"1.txt", "2.txt", "3.txt", "4.txt", "5.txt"};
-    ans = str_search_in_files("abc", count, f_names[0], f_names[1], f_names[2], f_names[3], f_names[4]);
+    ans = str_search_in_files("", count, f_names[0], f_names[1], f_names[2], f_names[3], f_names[4]);
     if (!ans) return 0;
     for (int i=0; i<count; i++){
         if (ans[i] == cant_open_file) {
