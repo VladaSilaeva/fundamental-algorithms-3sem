@@ -9,19 +9,20 @@ int str_search(const char* str, const char* f_name){
     FILE* fin = fopen(f_name, "r");
     int j_in_str=0, i_first=-1, i_in_file=0;
     if (!fin) return cant_open_file;
-    if (!str[0]) return 0;
+    if (!str[0]) {fclose(fin); return 0;}
     while(!feof(fin)) {
         if (fgetc(fin)==str[j_in_str]) {
             if (i_first==-1) i_first = i_in_file;
             j_in_str++;            
         }
         else {
-            if (!str[j_in_str]) return i_first;
+            if (!str[j_in_str]) {fclose(fin); return i_first;}
             j_in_str=0;
             i_first=-1;
         }
         i_in_file++;
     }
+    fclose(fin);
     return not_found;
 }
 
