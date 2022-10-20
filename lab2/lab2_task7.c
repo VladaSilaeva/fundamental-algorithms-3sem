@@ -41,8 +41,6 @@ int isconvex(int count, ...){
     polygon[count+1].x = polygon[1].x; polygon[count+1].y = polygon[1].y;
     for (int i=0; i<count; i++) {
         k = (polygon[i+1].x-polygon[i].x)*(polygon[i+2].y-polygon[i+1].y)-(polygon[i+1].y-polygon[i].y)*(polygon[i+2].x-polygon[i+1].x);
-        printf("%d A(%.2f; %.2f) B(%.2f; %.2f) C(%.2f; %.2f)\t\t\t\t", i, polygon[i].x,polygon[i].y, polygon[i+1].x,polygon[i+1].y, polygon[i+2].x,polygon[i+2].y);
-        printf("AB(%.2f; %.2f) BC(%.2f; %.2f)\tk=%f\n", (polygon[i+1].x-polygon[i].x), (polygon[i+1].y-polygon[i].y), (polygon[i+2].x-polygon[i+1].x), (polygon[i+2].y-polygon[i+1].y), k);
         if (k < -EPS) {
             if (direction > 0) {
                 free(polygon);
